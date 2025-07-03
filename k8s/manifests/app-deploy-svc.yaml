@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: tic-tac-toe
-        image: ghcr.io/gesatessa/devsecops-tic-tac-toe-react:sha-cbf449a87978be56871cb1c57d42d534f79270c0
+        image: ghcr.io/gesatessa/devsecops-tic-tac-toe-react:sha-34b5bb1326b8f70dbe8311949cd6c07d15514635
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80
