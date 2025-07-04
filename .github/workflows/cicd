@@ -2,11 +2,11 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
     paths-ignore:
       - 'k8s/manifests/' # to prevent loops
   pull_request:
-    branches: [main]
+    branches: [ main ]
 
 jobs:
   test:
@@ -143,33 +143,41 @@ jobs:
         id: set_output
         run: echo "image_tag=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_OUTPUT
 
-  helm-deploy:
-    name: Deploy via Helm
+  update-k8s:
+    name: Update Kubernetes Deployment
     runs-on: ubuntu-latest
     needs: [docker]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Set up Kubeconfig
-        uses: azure/setup-kubectl@v3
         with:
-          version: 'latest'
+          token: ${{ secrets.TOKEN }}
 
-      - name: Set up Helm
-        uses: azure/setup-helm@v3
-        with:
-          version: 'latest'
+      - name: Setup Git config
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
 
-      - name: Upgrade release using Helm
+      - name: Update Kubernetes deployment file
         env:
           IMAGE_TAG: sha-${{ github.sha }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           REGISTRY: ghcr.io
         run: |
-          helm upgrade --install tic-tac-toe helm/tic-tac-toe \
-            --namespace default \
-            --set image.repository=${REGISTRY}/${GITHUB_REPOSITORY} \
-            --set image.tag=${IMAGE_TAG} \
-            --wait
+          # Define the new image with tag
+          NEW_IMAGE="${REGISTRY}/${GITHUB_REPOSITORY}:${IMAGE_TAG}"
+
+          # Update the deployment file directly
+          sed -i "s|image: ${REGISTRY}/.*|image: ${NEW_IMAGE}|g" k8s/manifests/app-deploy-svc.yaml
+
+          # Verify the change
+          echo "Updated deployment to use image: ${NEW_IMAGE}"
+          grep -A 1 "image:" k8s/manifests/app-deploy-svc.yaml
+
+      - name: Commit and push changes
+        run: |
+          git add k8s/manifests/app-deploy-svc.yaml
+          git commit -m "Update Kubernetes deployment with new image tag: ${{ needs.docker.outputs.image_tag }} [skip ci]" || echo "No changes to commit"
+          git push
+

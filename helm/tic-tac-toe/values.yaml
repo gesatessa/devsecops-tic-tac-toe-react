@@ -1,0 +1,26 @@
+nameOverride: tic-tac-toe
+fullnameOverride: tic-tac-toe-app
+
+replicaCount: 2
+
+image:
+  repository: ghcr.io/gesatessa/devsecops-tic-tac-toe-react
+  tag: "sha-34b5bb1326b8f70dbe8311949cd6c07d15514635"
+  pullPolicy: IfNotPresent
+
+imagePullSecret: github-container-registry
+
+service:
+  type: NodePort
+  nodePort: 32123
+
+resources:
+  limits:
+    cpu: "0.5"
+    memory: "512Mi"
+  requests:
+    cpu: "0.2"
+    memory: "256Mi"
+
+ingress:
+  enabled: true
