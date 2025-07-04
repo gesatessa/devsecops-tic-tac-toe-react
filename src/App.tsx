@@ -101,7 +101,7 @@ function App() {
             <Award className="h-8 w-8" />
             Tic Tac Toe
           </h1>
-          <p className="text-indigo-200 mt-1">A classic game reimagined!</p>
+          <p className="text-indigo-200 mt-1">Old-school fun, with a modern spin!</p>
         </div>
         
         <div className="p-6 md:p-8 grid grid-cols-1 md:grid-cols-3 gap-8">
