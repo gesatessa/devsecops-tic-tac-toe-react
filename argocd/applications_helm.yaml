@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: tic-tac-toe
+  namespace: argocd
+spec:
+  destination:
+    namespace: default
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    repoURL: https://github.com/gesatessa/devsecops-tic-tac-toe-react.git
+    targetRevision: HEAD
+    path: helm/tic-tac-toe
+    helm:
+      valueFiles:
+        - values.yaml
+      # You can add extra helm parameters here if needed
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

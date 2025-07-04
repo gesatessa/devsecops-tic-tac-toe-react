@@ -11,7 +11,7 @@ image:
 imagePullSecret: github-container-registry
 
 service:
-  type: NodePort
+  type: ClusterIP
   nodePort: 32123
 
 resources:
