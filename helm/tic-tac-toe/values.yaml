@@ -5,7 +5,7 @@ replicaCount: 2
 
 image:
   repository: ghcr.io/gesatessa/devsecops-tic-tac-toe-react
-  tag: "sha-ad8c62fc667bc3c5133603ffd442f9d17bb2b5dc"
+  tag: "sha-694a1a0844686d0690a340b1d3b823c6c2a1aafa"
   pullPolicy: IfNotPresent
 
 imagePullSecret: github-container-registry
